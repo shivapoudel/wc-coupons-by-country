@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: WC Coupons by Location
- * Plugin URI: https://github.com/axisthemes/wc-coupon-by-location
+ * Plugin URI: https://github.com/shivapoudel/wc-coupon-by-location
  * Description: WooCommerce Coupons by Location restricts coupons by customer’s billing or shipping country.
  * Version: 1.0.0
- * Author: AxisThemes
- * Author URI: http://axisthemes.com
+ * Author: Shiva Poudel
+ * Author URI: http://shivapoudel.com
  * License: GPLv3 or later
  * Text Domain: wc-coupons-by-location
  * Domain Path: /languages/
