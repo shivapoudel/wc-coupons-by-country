@@ -47,6 +47,8 @@ class WC_Coupons_Location {
 			// Hooks
 			add_action( 'woocommerce_coupon_options_usage_restriction', array( $this, 'coupon_options_data' ) );
 			add_action( 'woocommerce_coupon_options_save', array( $this, 'coupon_options_save' ) );
+			add_action( 'woocommerce_coupon_loaded', array( $this, 'coupon_loaded' ) );
+			add_filter( 'woocommerce_coupon_is_valid', array( $this, 'coupon_is_valid' ), 10, 2 );
 		} else {
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
 		}
@@ -114,6 +116,35 @@ class WC_Coupons_Location {
 
 		// Save
 		update_post_meta( $post_id, 'billing_locations', $billing_locations );
+	}
+
+	/**
+	 * Populates an order from the loaded post data.
+	 */
+	public function coupon_loaded( $coupon ) {
+		$coupon->billing_locations = get_post_meta( $coupon->id, 'billing_locations', true );
+	}
+
+	/**
+	 * Check if coupon is valid.
+	 * @return bool
+	 */
+	public function coupon_is_valid( $valid_for_cart, $coupon ) {
+		if ( sizeof( $coupon->billing_locations ) > 0 ) {
+			$valid_for_cart = false;
+			if ( ! WC()->cart->is_empty() ) {
+				$location = WC_Geolocation::geolocate_ip();
+				$country  = ! empty( $location['country'] ) ? $location['country'] : 'US';
+				if ( in_array( $country, $coupon->billing_locations ) ) {
+					$valid_for_cart = true;
+				}
+			}
+			if ( ! $valid_for_cart ) {
+				throw new Exception( WC_Coupon::E_WC_COUPON_NOT_APPLICABLE );
+			}
+		}
+
+		return $valid_for_cart;
 	}
 
 	/**
