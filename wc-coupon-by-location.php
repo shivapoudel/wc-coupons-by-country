@@ -29,6 +29,12 @@ class WC_Coupons_Location {
 	const VERSION = '1.0.0';
 
 	/**
+	 * Coupon message code.
+	 * @var integer
+	 */
+	const E_WC_COUPON_INVALID_COUNTRY = 99;
+
+	/**
 	 * Instance of this class.
 	 * @var object
 	 */
@@ -44,11 +50,14 @@ class WC_Coupons_Location {
 		// Checks with WooCommerce is installed.
 		if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.3', '>=' ) ) {
 
-			// Hooks
+			// Action Hooks
 			add_action( 'woocommerce_coupon_options_usage_restriction', array( $this, 'coupon_options_data' ) );
 			add_action( 'woocommerce_coupon_options_save', array( $this, 'coupon_options_save' ) );
 			add_action( 'woocommerce_coupon_loaded', array( $this, 'coupon_loaded' ) );
+
+			// Filter Hooks
 			add_filter( 'woocommerce_coupon_is_valid', array( $this, 'coupon_is_valid' ), 10, 2 );
+			add_filter( 'woocommerce_coupon_error', array( $this, 'get_country_coupon_error' ), 10, 3 );
 		} else {
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
 		}
@@ -140,11 +149,28 @@ class WC_Coupons_Location {
 				}
 			}
 			if ( ! $valid_for_cart ) {
-				throw new Exception( WC_Coupon::E_WC_COUPON_NOT_APPLICABLE );
+				throw new Exception( self::E_WC_COUPON_INVALID_COUNTRY );
 			}
 		}
 
 		return $valid_for_cart;
+	}
+
+	/**
+	 * Map one of the WC_Coupon error codes to an error string.
+	 * @param  int $err_code Error code
+	 * @return string| Error string
+	 */
+	public function get_country_coupon_error( $err, $err_code, $coupon ) {
+		switch ( $err_code ) {
+			case self::E_WC_COUPON_INVALID_COUNTRY:
+				$err = sprintf( __( 'Sorry, coupon "%s" is not applicable to your country.', 'wc-coupons-by-location' ), $coupon->code );
+			break;
+			default:
+				$err = '';
+			break;
+		}
+		return $err;
 	}
 
 	/**
