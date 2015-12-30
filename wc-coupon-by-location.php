@@ -107,7 +107,7 @@ class WC_Coupons_Location {
 				$locations = (array) get_post_meta( $post->ID, 'billing_locations', true );
 				$countries = WC()->countries->countries;
 
-				if ( $locations ) foreach ( $countries as $key => $val ) {
+				if ( $countries ) foreach ( $countries as $key => $val ) {
 					echo '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, $locations ), true, false ) . '>' . esc_html( $val ) . '</option>';
 				}
 			?>
@@ -122,7 +122,7 @@ class WC_Coupons_Location {
 				$locations = (array) get_post_meta( $post->ID, 'exclude_billing_locations', true );
 				$countries = WC()->countries->countries;
 
-				if ( $locations ) foreach ( $countries as $key => $val ) {
+				if ( $countries ) foreach ( $countries as $key => $val ) {
 					echo '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, $locations ), true, false ) . '>' . esc_html( $val ) . '</option>';
 				}
 			?>
