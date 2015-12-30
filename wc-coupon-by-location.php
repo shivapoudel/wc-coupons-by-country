@@ -104,14 +104,29 @@ class WC_Coupons_Location {
 		<p class="form-field"><label for="billing_locations"><?php _e( 'Billing Locations', 'wc-coupons-by-location' ); ?></label>
 		<select id="billing_locations" name="billing_locations[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Any location', 'wc-coupons-by-location' ); ?>">
 			<?php
-				$billing_locations = (array) get_post_meta( $post->ID, 'billing_locations', true );
-				$billing_countries = WC()->countries->countries;
+				$locations = (array) get_post_meta( $post->ID, 'billing_locations', true );
+				$countries = WC()->countries->countries;
 
-				if ( $billing_countries ) foreach ( $billing_countries as $key => $val ) {
-					echo '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, $billing_locations ), true, false ) . '>' . esc_html( $val ) . '</option>';
+				if ( $locations ) foreach ( $countries as $key => $val ) {
+					echo '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, $locations ), true, false ) . '>' . esc_html( $val ) . '</option>';
 				}
 			?>
 		</select> <?php echo wc_help_tip( __( 'An user must be in this location for the coupon to remain valid or, for "Product Discounts", users in these location will be discounted.', 'wc-coupons-by-location' ) ); ?></p>
+		<?php
+
+		// Exclude Locations
+		?>
+		<p class="form-field"><label for="exclude_billing_locations"><?php _e( 'Exclude Locations', 'wc-coupons-by-location' ); ?></label>
+		<select id="exclude_billing_locations" name="exclude_billing_locations[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'No location', 'wc-coupons-by-location' ); ?>">
+			<?php
+				$locations = (array) get_post_meta( $post->ID, 'exclude_billing_locations', true );
+				$countries = WC()->countries->countries;
+
+				if ( $locations ) foreach ( $countries as $key => $val ) {
+					echo '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, $locations ), true, false ) . '>' . esc_html( $val ) . '</option>';
+				}
+			?>
+		</select> <?php echo wc_help_tip( __( 'An user must not be in this location for the coupon to remain valid or, for "Product Discounts", users in these location will be discounted.', 'wc-coupons-by-location' ) ); ?></p>
 		<?php
 
 		echo '</div>';
@@ -122,9 +137,11 @@ class WC_Coupons_Location {
 	 */
 	public function coupon_options_save( $post_id ) {
 		$billing_locations = isset( $_POST['billing_locations'] ) ? wc_clean( $_POST['billing_locations'] ) : array();
+		$exclude_billing_locations = isset( $_POST['exclude_billing_locations'] ) ? wc_clean( $_POST['exclude_billing_locations'] ) : array();
 
 		// Save
 		update_post_meta( $post_id, 'billing_locations', $billing_locations );
+		update_post_meta( $post_id, 'exclude_billing_locations', $exclude_billing_locations );
 	}
 
 	/**
