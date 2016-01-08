@@ -101,17 +101,34 @@ class WC_Coupons_Location {
 
 		// Billing Locations
 		?>
-		<p class="form-field"><label for="customer_locations"><?php _e( 'Location restrictions', 'wc-coupons-by-location' ); ?></label>
-		<select id="customer_locations" name="customer_locations[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'No restrictions', 'wc-coupons-by-location' ); ?>">
+		<p class="form-field"><label for="billing_locations"><?php _e( 'Billing locations', 'wc-coupons-by-location' ); ?></label>
+		<select id="billing_locations" name="billing_locations[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Any billing locations', 'wc-coupons-by-location' ); ?>">
 			<?php
-				$locations = (array) get_post_meta( $post->ID, 'customer_locations', true );
+				$locations = (array) get_post_meta( $post->ID, 'billing_locations', true );
 				$countries = WC()->countries->countries;
 
 				if ( $countries ) foreach ( $countries as $key => $val ) {
 					echo '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, $locations ), true, false ) . '>' . esc_html( $val ) . '</option>';
 				}
 			?>
-		</select> <?php echo wc_help_tip( __( 'An user must be in this location for the coupon to remain valid or, for "Product Discounts", users in these location will be discounted.', 'wc-coupons-by-location' ) ); ?></p>
+		</select> <?php echo wc_help_tip( __( 'An user must be in this billing locations for the coupon to remain valid or, for "Product Discounts", users in these location will be discounted.', 'wc-coupons-by-location' ) ); ?></p>
+		<?php
+
+		echo '</div><div class="options_group">';
+
+		// Shipping Locations
+		?>
+		<p class="form-field"><label for="shipping_locations"><?php _e( 'Shipping locations', 'wc-coupons-by-location' ); ?></label>
+		<select id="shipping_locations" name="shipping_locations[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Any shipping locations', 'wc-coupons-by-location' ); ?>">
+			<?php
+				$locations = (array) get_post_meta( $post->ID, 'shipping_locations', true );
+				$countries = WC()->countries->countries;
+
+				if ( $countries ) foreach ( $countries as $key => $val ) {
+					echo '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, $locations ), true, false ) . '>' . esc_html( $val ) . '</option>';
+				}
+			?>
+		</select> <?php echo wc_help_tip( __( 'An user must be in this shipping locations for the coupon to remain valid or, for "Product Discounts", users in these location will be discounted.', 'wc-coupons-by-location' ) ); ?></p>
 		<?php
 
 		echo '</div>';
@@ -121,17 +138,20 @@ class WC_Coupons_Location {
 	 * Save coupons meta box data.
 	 */
 	public function coupon_options_save( $post_id ) {
-		$customer_locations = isset( $_POST['customer_locations'] ) ? wc_clean( $_POST['customer_locations'] ) : array();
+		$billing_locations  = isset( $_POST['billing_locations'] ) ? wc_clean( $_POST['billing_locations'] ) : array();
+		$shipping_locations = isset( $_POST['shipping_locations'] ) ? wc_clean( $_POST['shipping_locations'] ) : array();
 
-		// Save customer locations.
-		update_post_meta( $post_id, 'customer_locations', $customer_locations );
+		// Save billing and shipping locations.
+		update_post_meta( $post_id, 'billing_locations', $billing_locations );
+		update_post_meta( $post_id, 'shipping_locations', $shipping_locations );
 	}
 
 	/**
 	 * Populates an order from the loaded post data.
 	 */
 	public function coupon_loaded( $coupon ) {
-		$coupon->customer_locations = get_post_meta( $coupon->id, 'customer_locations', true );
+		$coupon->billing_locations = get_post_meta( $coupon->id, 'billing_locations', true );
+		$coupon->shipping_locations = get_post_meta( $coupon->id, 'shipping_locations', true );
 	}
 
 	/**
@@ -139,11 +159,10 @@ class WC_Coupons_Location {
 	 * @return bool
 	 */
 	public function is_valid_for_country( $valid_for_cart, $coupon ) {
-		if ( sizeof( $coupon->customer_locations ) > 0 ) {
+		if ( sizeof( $coupon->billing_locations ) > 0 || sizeof( $coupon->shipping_locations ) > 0 ) {
 			$valid_for_cart = false;
 			if ( ! WC()->cart->is_empty() ) {
-				$customer_locations = array( WC()->customer->country, WC()->customer->shipping_country );
-				if ( sizeof( array_intersect( $customer_locations, $coupon->customer_locations ) ) > 0 ) {
+				if ( in_array( WC()->customer->country, $coupon->billing_locations ) || in_array( WC()->customer->shipping_country, $coupon->shipping_locations ) ) {
 					$valid_for_cart = true;
 				}
 			}
