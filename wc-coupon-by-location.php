@@ -158,18 +158,15 @@ class WC_Coupons_Location {
 
 	/**
 	 * Map one of the WC_Coupon error codes to an error string.
+	 * @param  string $err Error message.
 	 * @param  int $err_code Error code
 	 * @return string| Error string
 	 */
 	public function get_country_coupon_error( $err, $err_code, $coupon ) {
-		switch ( $err_code ) {
-			case self::E_WC_COUPON_INVALID_COUNTRY:
-				$err = sprintf( __( 'Sorry, coupon "%s" is not applicable to your country.', 'wc-coupons-by-location' ), $coupon->code );
-			break;
-			default:
-				$err = '';
-			break;
+		if ( self::E_WC_COUPON_INVALID_COUNTRY == $err_code ) {
+			$err = sprintf( __( 'Sorry, coupon "%s" is not applicable to your country.', 'wc-coupons-by-location' ), $coupon->code );
 		}
+
 		return $err;
 	}
 
