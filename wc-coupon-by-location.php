@@ -123,7 +123,7 @@ class WC_Coupons_Location {
 	public function coupon_options_save( $post_id ) {
 		$billing_locations = isset( $_POST['billing_locations'] ) ? wc_clean( $_POST['billing_locations'] ) : array();
 
-		// Save
+		// Save billing locations.
 		update_post_meta( $post_id, 'billing_locations', $billing_locations );
 	}
 
