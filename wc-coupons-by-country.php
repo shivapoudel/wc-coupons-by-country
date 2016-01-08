@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: WC Coupons by Location
- * Plugin URI: https://github.com/shivapoudel/wc-coupon-by-location
- * Description: WooCommerce Coupons by Location restricts coupons by customer’s billing or shipping country.
+ * Plugin Name: WC Coupons by Country
+ * Plugin URI: https://github.com/shivapoudel/wc-coupons-by-country
+ * Description: WooCommerce Coupons by Country restricts coupons by customer’s billing or shipping country.
  * Version: 1.0.0
  * Author: Shiva Poudel
  * Author URI: http://shivapoudel.com
  * License: GPLv3 or later
- * Text Domain: wc-coupons-by-location
+ * Text Domain: wc-coupons-by-country
  * Domain Path: /languages/
  */
 
@@ -15,12 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'WC_Coupons_Location' ) ) :
+if ( ! class_exists( 'WC_Coupons_Country' ) ) :
 
 /**
- * Main WC_Coupons_Location Class.
+ * Main WC_Coupons_Country Class.
  */
-class WC_Coupons_Location {
+class WC_Coupons_Country {
 
 	/**
 	 * Plugin version.
@@ -81,14 +81,14 @@ class WC_Coupons_Location {
 	 * Note: the first-loaded translation file overrides any following ones if the same translation is present.
 	 *
 	 * Locales found in:
-	 *      - WP_LANG_DIR/wc-coupons-by-location/wc-coupons-by-location-LOCALE.mo
-	 *      - WP_LANG_DIR/plugins/wc-coupons-by-location-LOCALE.mo
+	 *      - WP_LANG_DIR/wc-coupons-by-country/wc-coupons-by-country-LOCALE.mo
+	 *      - WP_LANG_DIR/plugins/wc-coupons-by-country-LOCALE.mo
 	 */
 	public function load_plugin_textdomain() {
-		$locale = apply_filters( 'plugin_locale', get_locale(), 'wc-coupons-by-location' );
+		$locale = apply_filters( 'plugin_locale', get_locale(), 'wc-coupons-by-country' );
 
-		load_textdomain( 'wc-coupons-by-location', WP_LANG_DIR . '/wc-coupons-by-location/wc-coupons-by-location-' . $locale . '.mo' );
-		load_plugin_textdomain( 'wc-coupons-by-location', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+		load_textdomain( 'wc-coupons-by-country', WP_LANG_DIR . '/wc-coupons-by-country/wc-coupons-by-country-' . $locale . '.mo' );
+		load_plugin_textdomain( 'wc-coupons-by-country', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 	}
 
 	/**
@@ -101,8 +101,8 @@ class WC_Coupons_Location {
 
 		// Billing Countries
 		?>
-		<p class="form-field"><label for="billing_countries"><?php _e( 'Billing countries', 'wc-coupons-by-location' ); ?></label>
-		<select id="billing_countries" name="billing_countries[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Any countries', 'wc-coupons-by-location' ); ?>">
+		<p class="form-field"><label for="billing_countries"><?php _e( 'Billing countries', 'wc-coupons-by-country' ); ?></label>
+		<select id="billing_countries" name="billing_countries[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Any countries', 'wc-coupons-by-country' ); ?>">
 			<?php
 				$locations = (array) get_post_meta( $post->ID, 'billing_countries', true );
 				$countries = WC()->countries->countries;
@@ -111,13 +111,13 @@ class WC_Coupons_Location {
 					echo '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, $locations ), true, false ) . '>' . esc_html( $val ) . '</option>';
 				}
 			?>
-		</select> <?php echo wc_help_tip( __( 'List of allowed countries to check against the customer\'s billing country for the coupon to remain valid.', 'wc-coupons-by-location' ) ); ?></p>
+		</select> <?php echo wc_help_tip( __( 'List of allowed countries to check against the customer\'s billing country for the coupon to remain valid.', 'wc-coupons-by-country' ) ); ?></p>
 		<?php
 
 		// Shipping Countries
 		?>
-		<p class="form-field"><label for="shipping_countries"><?php _e( 'Shipping countries', 'wc-coupons-by-location' ); ?></label>
-		<select id="shipping_countries" name="shipping_countries[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Any countries', 'wc-coupons-by-location' ); ?>">
+		<p class="form-field"><label for="shipping_countries"><?php _e( 'Shipping countries', 'wc-coupons-by-country' ); ?></label>
+		<select id="shipping_countries" name="shipping_countries[]" style="width: 50%;" class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php esc_attr_e( 'Any countries', 'wc-coupons-by-country' ); ?>">
 			<?php
 				$locations = (array) get_post_meta( $post->ID, 'shipping_countries', true );
 				$countries = WC()->countries->countries;
@@ -126,7 +126,7 @@ class WC_Coupons_Location {
 					echo '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, $locations ), true, false ) . '>' . esc_html( $val ) . '</option>';
 				}
 			?>
-		</select> <?php echo wc_help_tip( __( 'List of allowed countries to check against the customer\'s shipping country for the coupon to remain valid.', 'wc-coupons-by-location' ) ); ?></p>
+		</select> <?php echo wc_help_tip( __( 'List of allowed countries to check against the customer\'s shipping country for the coupon to remain valid.', 'wc-coupons-by-country' ) ); ?></p>
 		<?php
 
 		echo '</div>';
@@ -181,7 +181,7 @@ class WC_Coupons_Location {
 	 */
 	public function get_country_coupon_error( $err, $err_code, $coupon ) {
 		if ( self::E_WC_COUPON_INVALID_COUNTRY == $err_code ) {
-			$err = sprintf( __( 'Sorry, coupon "%s" is not applicable to your country.', 'wc-coupons-by-location' ), $coupon->code );
+			$err = sprintf( __( 'Sorry, coupon "%s" is not applicable to your country.', 'wc-coupons-by-country' ), $coupon->code );
 		}
 
 		return $err;
@@ -192,10 +192,10 @@ class WC_Coupons_Location {
 	 * @return string
 	 */
 	public function woocommerce_missing_notice() {
-		echo '<div class="error notice is-dismissible"><p>' . sprintf( __( 'WooCommerce Coupons by Location depends on the last version of %s or later to work!', 'wc-coupons-by-location' ), '<a href="http://www.woothemes.com/woocommerce/" target="_blank">' . __( 'WooCommerce 2.3', 'wc-coupons-by-location' ) . '</a>' ) . '</p></div>';
+		echo '<div class="error notice is-dismissible"><p>' . sprintf( __( 'WooCommerce Coupons by Location depends on the last version of %s or later to work!', 'wc-coupons-by-country' ), '<a href="http://www.woothemes.com/woocommerce/" target="_blank">' . __( 'WooCommerce 2.3', 'wc-coupons-by-country' ) . '</a>' ) . '</p></div>';
 	}
 }
 
-add_action( 'plugins_loaded', array( 'WC_Coupons_Location', 'get_instance' ), 0 );
+add_action( 'plugins_loaded', array( 'WC_Coupons_Country', 'get_instance' ), 0 );
 
 endif;
