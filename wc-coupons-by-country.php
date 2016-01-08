@@ -56,6 +56,7 @@ class WC_Coupons_Country {
 			add_action( 'woocommerce_coupon_loaded', array( $this, 'coupon_loaded' ) );
 
 			// Filter Hooks
+			add_filter( 'woocommerce_api_coupon_response', array( $this, 'api_coupon_response' ), 10, 2 );
 			add_filter( 'woocommerce_coupon_is_valid', array( $this, 'is_valid_for_country' ), 10, 2 );
 			add_filter( 'woocommerce_coupon_error', array( $this, 'get_country_coupon_error' ), 10, 3 );
 		} else {
@@ -149,8 +150,20 @@ class WC_Coupons_Country {
 	 * @param WC_Coupon $coupon
 	 */
 	public function coupon_loaded( $coupon ) {
-		$coupon->billing_countries = get_post_meta( $coupon->id, 'billing_countries', true );
+		$coupon->billing_countries  = get_post_meta( $coupon->id, 'billing_countries', true );
 		$coupon->shipping_countries = get_post_meta( $coupon->id, 'shipping_countries', true );
+	}
+
+	/**
+	 * Rest API get coupon response.
+	 * @param  array  $coupon_data
+	 * @param  object $coupon
+	 * @return array
+	 */
+	public function api_coupon_response( $coupon_data, $coupon ) {
+		$coupon_data['billing_countries']  = $coupon->billing_countries;
+		$coupon_data['shipping_countries'] = $coupon->shipping_countries;
+		return $coupon_data;
 	}
 
 	/**
