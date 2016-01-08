@@ -55,8 +55,11 @@ class WC_Coupons_Country {
 			add_action( 'woocommerce_coupon_options_save', array( $this, 'coupon_options_save' ) );
 			add_action( 'woocommerce_coupon_loaded', array( $this, 'coupon_loaded' ) );
 
-			// Filter Hooks
+			// Rest API Hooks
 			add_filter( 'woocommerce_api_coupon_response', array( $this, 'api_coupon_response' ), 10, 2 );
+			add_action( 'woocommerce_api_create_coupon', array( $this, 'api_create_coupon' ), 10, 2 );
+
+			// Filter Hooks
 			add_filter( 'woocommerce_coupon_is_valid', array( $this, 'is_valid_for_country' ), 10, 2 );
 			add_filter( 'woocommerce_coupon_error', array( $this, 'get_country_coupon_error' ), 10, 3 );
 		} else {
@@ -164,6 +167,21 @@ class WC_Coupons_Country {
 		$coupon_data['billing_countries']  = $coupon->billing_countries;
 		$coupon_data['shipping_countries'] = $coupon->shipping_countries;
 		return $coupon_data;
+	}
+
+	/**
+	 * Rest API create coupon.
+	 * @param  array  $coupon_data
+	 * @param  object $coupon
+	 * @return array
+	 */
+	public function api_create_coupon( $id, $data ) {
+		$billing_countries  = isset( $data['billing_countries'] ) ? wc_clean( $data['billing_countries'] ) : array();
+		$shipping_countries = isset( $data['shipping_countries'] ) ? wc_clean( $data['shipping_countries'] ) : array();
+
+		// Save billing and shipping countries.
+		update_post_meta( $id, 'billing_countries', $billing_countries );
+		update_post_meta( $id, 'shipping_countries', $shipping_countries );
 	}
 
 	/**
