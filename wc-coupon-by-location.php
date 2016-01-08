@@ -56,7 +56,7 @@ class WC_Coupons_Location {
 			add_action( 'woocommerce_coupon_loaded', array( $this, 'coupon_loaded' ) );
 
 			// Filter Hooks
-			add_filter( 'woocommerce_coupon_is_valid', array( $this, 'coupon_is_valid' ), 10, 2 );
+			add_filter( 'woocommerce_coupon_is_valid', array( $this, 'is_valid_for_country' ), 10, 2 );
 			add_filter( 'woocommerce_coupon_error', array( $this, 'get_country_coupon_error' ), 10, 3 );
 		} else {
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
@@ -135,10 +135,10 @@ class WC_Coupons_Location {
 	}
 
 	/**
-	 * Check if coupon is valid.
+	 * Check if coupon is valid for country.
 	 * @return bool
 	 */
-	public function coupon_is_valid( $valid_for_cart, $coupon ) {
+	public function is_valid_for_country( $valid_for_cart, $coupon ) {
 		if ( sizeof( $coupon->billing_locations ) > 0 ) {
 			$valid_for_cart = false;
 			if ( ! WC()->cart->is_empty() ) {
