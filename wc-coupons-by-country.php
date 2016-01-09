@@ -50,19 +50,17 @@ class WC_Coupons_Country {
 		// Checks with WooCommerce is installed.
 		if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.3', '>=' ) ) {
 
-			// Action Hooks
+			// Hooks
 			add_action( 'woocommerce_coupon_options_usage_restriction', array( $this, 'coupon_options_data' ) );
 			add_action( 'woocommerce_coupon_options_save', array( $this, 'coupon_options_save' ) );
 			add_action( 'woocommerce_coupon_loaded', array( $this, 'coupon_loaded' ) );
+			add_filter( 'woocommerce_coupon_is_valid', array( $this, 'is_valid_for_country' ), 10, 2 );
+			add_filter( 'woocommerce_coupon_error', array( $this, 'get_country_coupon_error' ), 10, 3 );
 
-			// Rest API Hooks
+			// Rest API
 			add_filter( 'woocommerce_api_coupon_response', array( $this, 'api_coupon_response' ), 10, 2 );
 			add_action( 'woocommerce_api_create_coupon', array( $this, 'api_create_coupon' ), 10, 2 );
 			add_action( 'woocommerce_api_edit_coupon', array( $this, 'api_edit_coupon' ), 10, 2 );
-
-			// Filter Hooks
-			add_filter( 'woocommerce_coupon_is_valid', array( $this, 'is_valid_for_country' ), 10, 2 );
-			add_filter( 'woocommerce_coupon_error', array( $this, 'get_country_coupon_error' ), 10, 3 );
 		} else {
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
 		}
@@ -159,6 +157,40 @@ class WC_Coupons_Country {
 	}
 
 	/**
+	 * Check if coupon is valid for country.
+	 * @return bool
+	 */
+	public function is_valid_for_country( $valid_for_cart, $coupon ) {
+		if ( sizeof( $coupon->billing_countries ) > 0 || sizeof( $coupon->shipping_countries ) > 0 ) {
+			$valid_for_cart = false;
+			if ( ! WC()->cart->is_empty() ) {
+				if ( in_array( WC()->customer->country, $coupon->billing_countries ) || in_array( WC()->customer->shipping_country, $coupon->shipping_countries ) ) {
+					$valid_for_cart = true;
+				}
+			}
+			if ( ! $valid_for_cart ) {
+				throw new Exception( self::E_WC_COUPON_INVALID_COUNTRY );
+			}
+		}
+
+		return $valid_for_cart;
+	}
+
+	/**
+	 * Map one of the WC_Coupon error codes to an error string.
+	 * @param  string $err Error message.
+	 * @param  int $err_code Error code
+	 * @return string| Error string
+	 */
+	public function get_country_coupon_error( $err, $err_code, $coupon ) {
+		if ( self::E_WC_COUPON_INVALID_COUNTRY == $err_code ) {
+			$err = sprintf( __( 'Sorry, coupon "%s" is not applicable to your country.', 'wc-coupons-by-country' ), $coupon->code );
+		}
+
+		return $err;
+	}
+
+	/**
 	 * Rest API get coupon response.
 	 * @param  array  $coupon_data
 	 * @param  object $coupon
@@ -197,40 +229,6 @@ class WC_Coupons_Country {
 		if ( isset( $data['shipping_countries'] ) ) {
 			update_post_meta( $id, 'shipping_countries', wc_clean( $data['shipping_countries'] ) );
 		}
-	}
-
-	/**
-	 * Check if coupon is valid for country.
-	 * @return bool
-	 */
-	public function is_valid_for_country( $valid_for_cart, $coupon ) {
-		if ( sizeof( $coupon->billing_countries ) > 0 || sizeof( $coupon->shipping_countries ) > 0 ) {
-			$valid_for_cart = false;
-			if ( ! WC()->cart->is_empty() ) {
-				if ( in_array( WC()->customer->country, $coupon->billing_countries ) || in_array( WC()->customer->shipping_country, $coupon->shipping_countries ) ) {
-					$valid_for_cart = true;
-				}
-			}
-			if ( ! $valid_for_cart ) {
-				throw new Exception( self::E_WC_COUPON_INVALID_COUNTRY );
-			}
-		}
-
-		return $valid_for_cart;
-	}
-
-	/**
-	 * Map one of the WC_Coupon error codes to an error string.
-	 * @param  string $err Error message.
-	 * @param  int $err_code Error code
-	 * @return string| Error string
-	 */
-	public function get_country_coupon_error( $err, $err_code, $coupon ) {
-		if ( self::E_WC_COUPON_INVALID_COUNTRY == $err_code ) {
-			$err = sprintf( __( 'Sorry, coupon "%s" is not applicable to your country.', 'wc-coupons-by-country' ), $coupon->code );
-		}
-
-		return $err;
 	}
 
 	/**
