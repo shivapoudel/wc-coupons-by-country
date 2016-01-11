@@ -1,6 +1,6 @@
 === WC Coupons by Country ===
 Contributors: axisthemes, shivapoudel
-Tags: woocommerce, coupons, country, restrictions
+Tags: woocommerce, coupons, country, usage, restrictions
 Requires at least: 4.0
 Tested up to: 4.4
 Stable tag: 1.0.0
@@ -11,9 +11,9 @@ Restricts coupons usage to specific countries in WooCommerce plugin.
 
 == Description ==
 
-= Adds country restriction to WooCommerce Coupon =
+= Adds country usage restriction to WooCommerce Coupon =
 
-This plugin adds restriction to specific countries in WooCommerce coupons by customer’s billing or shipping country.
+This plugin adds usage restriction to specific countries in WooCommerce coupons by customer’s billing or shipping country.
 
 Please notice that [WooCommerce](http://wordpress.org/plugins/woocommerce/) must be installed and active.
 
@@ -43,7 +43,7 @@ You can contribute to the source code in our [GitHub](https://github.com/axisthe
 
 Automatic installation is the easiest option as WordPress handles the file transfers itself and you don’t need to leave your web browser. To do an automatic install of WC Coupons by Country, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New.
 
-In the search field type “WC Coupons by Country” and click Search Plugins. Once you’ve found our coupon restriction plugin you can view details about it such as the the point release, rating and description. Most importantly of course, you can install it by simply clicking “Install Now”.
+In the search field type “WC Coupons by Country” and click Search Plugins. Once you’ve found our coupon usage restriction plugin you can view details about it such as the the point release, rating and description. Most importantly of course, you can install it by simply clicking “Install Now”.
 
 = Manual installation =
 
