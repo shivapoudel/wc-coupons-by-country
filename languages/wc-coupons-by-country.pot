@@ -1,0 +1,75 @@
+# Copyright (C) 2016 AxisThemes
+# This file is distributed under the GPLv3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WC Coupons by Country 1.0.0\n"
+"Report-Msgid-Bugs-To: "
+"https://github.com/axisthemes/wc-coupons-by-country/issues\n"
+"POT-Creation-Date: 2016-01-11 08:21:23+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"X-Generator: grunt-wp-i18n 0.5.3\n"
+
+#: wc-coupons-by-country.php:107
+msgid "Billing countries"
+msgstr ""
+
+#: wc-coupons-by-country.php:108 wc-coupons-by-country.php:123
+msgid "Any countries"
+msgstr ""
+
+#: wc-coupons-by-country.php:117
+msgid ""
+"List of allowed countries to check against the customer's billing country "
+"for the coupon to remain valid."
+msgstr ""
+
+#: wc-coupons-by-country.php:122
+msgid "Shipping countries"
+msgstr ""
+
+#: wc-coupons-by-country.php:132
+msgid ""
+"List of allowed countries to check against the customer's shipping country "
+"for the coupon to remain valid."
+msgstr ""
+
+#: wc-coupons-by-country.php:187
+msgid "Sorry, coupon \"%s\" is not applicable to your country."
+msgstr ""
+
+#: wc-coupons-by-country.php:239
+msgid ""
+"WooCommerce Coupons by Location depends on the last version of %s or later "
+"to work!"
+msgstr ""
+
+#: wc-coupons-by-country.php:239
+msgid "WooCommerce 2.3"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WC Coupons by Country"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/axisthemes/wc-coupons-by-country"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"WooCommerce Coupons by Country restricts coupons usage to specific "
+"countries."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "AxisThemes"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://axisthemes.com"
+msgstr ""
