@@ -14,8 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WC_Meta_Box_Coupon_Usage_Data' ) ) :
-
 /**
  * WC_Meta_Box_Coupon_Usage_Data Class.
  */
@@ -134,7 +132,5 @@ class WC_Meta_Box_Coupon_Usage_Data {
 		return $err;
 	}
 }
-
-endif;
 
 WC_Meta_Box_Coupon_Usage_Data::init();
